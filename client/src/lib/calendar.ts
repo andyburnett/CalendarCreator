@@ -58,18 +58,18 @@ const formatDate = (date: Date): string => {
 const getNextDate = (currentDate: Date, frequency: string): Date => {
   const nextDate = new Date(currentDate);
 
-  switch (frequency) {
+  switch (frequency.toLowerCase()) {
     case 'daily':
-      nextDate.setDate(currentDate.getDate() + 1);
+      nextDate.setUTCDate(currentDate.getUTCDate() + 1);
       break;
     case 'two-days':
-      nextDate.setDate(currentDate.getDate() + 2);
+      nextDate.setUTCDate(currentDate.getUTCDate() + 2);
       break;
     case 'weekly':
-      nextDate.setDate(currentDate.getDate() + 7);
+      nextDate.setUTCDate(currentDate.getUTCDate() + 7);
       break;
     default:
-      nextDate.setDate(currentDate.getDate() + 1);
+      nextDate.setUTCDate(currentDate.getUTCDate() + 1);
   }
 
   return nextDate;
@@ -85,15 +85,25 @@ const generateICalContent = (startDate: Date, frequency: string): string => {
     'METHOD:PUBLISH'
   ];
 
-  let currentDate = startDate;
+  // Ensure we're working with UTC dates
+  const utcStartDate = new Date(Date.UTC(
+    startDate.getFullYear(),
+    startDate.getMonth(),
+    startDate.getDate(),
+    startDate.getHours(),
+    startDate.getMinutes(),
+    startDate.getSeconds()
+  ));
+
+  let currentDate = utcStartDate;
 
   // Generate entries for each item in calendarEntries
-  calendarEntries.forEach((entry, index) => {
+  calendarEntries.forEach((entry) => {
     const eventStart = formatDate(currentDate);
 
     // Set event end time to 30 minutes after start
     const endDate = new Date(currentDate);
-    endDate.setMinutes(endDate.getMinutes() + 30);
+    endDate.setUTCMinutes(endDate.getUTCMinutes() + 30);
     const eventEnd = formatDate(endDate);
 
     // Format description with the link
