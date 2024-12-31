@@ -42,16 +42,16 @@ export const calendarEntries: CalendarEntry[] = [
 // Function to pad numbers with leading zeros
 const pad = (num: number): string => String(num).padStart(2, '0');
 
-// Format date to iCal format
+// Format date to iCal format with timezone
 const formatDate = (date: Date): string => {
-  const year = date.getUTCFullYear();
-  const month = pad(date.getUTCMonth() + 1);
-  const day = pad(date.getUTCDate());
-  const hours = pad(date.getUTCHours());
-  const minutes = pad(date.getUTCMinutes());
-  const seconds = pad(date.getUTCSeconds());
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
 
-  return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
+  return `${year}${month}${day}T${hours}${minutes}${seconds}`;
 };
 
 // Calculate next date based on frequency
@@ -60,16 +60,16 @@ const getNextDate = (currentDate: Date, frequency: string): Date => {
 
   switch (frequency.toLowerCase()) {
     case 'daily':
-      nextDate.setUTCDate(currentDate.getUTCDate() + 1);
+      nextDate.setDate(currentDate.getDate() + 1);
       break;
     case 'two-days':
-      nextDate.setUTCDate(currentDate.getUTCDate() + 2);
+      nextDate.setDate(currentDate.getDate() + 2);
       break;
     case 'weekly':
-      nextDate.setUTCDate(currentDate.getUTCDate() + 7);
+      nextDate.setDate(currentDate.getDate() + 7);
       break;
     default:
-      nextDate.setUTCDate(currentDate.getUTCDate() + 1);
+      nextDate.setDate(currentDate.getDate() + 1);
   }
 
   return nextDate;
@@ -85,17 +85,10 @@ const generateICalContent = (startDate: Date, frequency: string): string => {
     'METHOD:PUBLISH'
   ];
 
-  // Ensure we're working with UTC dates
-  const utcStartDate = new Date(Date.UTC(
-    startDate.getFullYear(),
-    startDate.getMonth(),
-    startDate.getDate(),
-    startDate.getHours(),
-    startDate.getMinutes(),
-    startDate.getSeconds()
-  ));
+  // Get timezone identifier
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  let currentDate = utcStartDate;
+  let currentDate = startDate;
 
   // Generate entries for each item in calendarEntries
   calendarEntries.forEach((entry) => {
@@ -103,7 +96,7 @@ const generateICalContent = (startDate: Date, frequency: string): string => {
 
     // Set event end time to 30 minutes after start
     const endDate = new Date(currentDate);
-    endDate.setUTCMinutes(endDate.getUTCMinutes() + 30);
+    endDate.setMinutes(endDate.getMinutes() + 30);
     const eventEnd = formatDate(endDate);
 
     // Format description with the link
@@ -111,8 +104,8 @@ const generateICalContent = (startDate: Date, frequency: string): string => {
 
     content = content.concat([
       'BEGIN:VEVENT',
-      `DTSTART:${eventStart}`,
-      `DTEND:${eventEnd}`,
+      `DTSTART;TZID=${timeZone}:${eventStart}`,
+      `DTEND;TZID=${timeZone}:${eventEnd}`,
       `SUMMARY:${entry.title}`,
       `DESCRIPTION:${description}`,
       `URL:${entry.link}`,
