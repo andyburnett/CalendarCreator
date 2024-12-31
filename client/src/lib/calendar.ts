@@ -76,7 +76,7 @@ const getNextDate = (currentDate: Date, frequency: string): Date => {
 };
 
 // Generate iCal content
-const generateICalContent = (startDate: Date, frequency: string): string => {
+const generateICalContent = (startDate: Date, frequency: string, timezone: string): string => {
   let content = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -84,9 +84,6 @@ const generateICalContent = (startDate: Date, frequency: string): string => {
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH'
   ];
-
-  // Get timezone identifier
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   let currentDate = startDate;
 
@@ -104,8 +101,8 @@ const generateICalContent = (startDate: Date, frequency: string): string => {
 
     content = content.concat([
       'BEGIN:VEVENT',
-      `DTSTART;TZID=${timeZone}:${eventStart}`,
-      `DTEND;TZID=${timeZone}:${eventEnd}`,
+      `DTSTART;TZID=${timezone}:${eventStart}`,
+      `DTEND;TZID=${timezone}:${eventEnd}`,
       `SUMMARY:${entry.title}`,
       `DESCRIPTION:${description}`,
       `URL:${entry.link}`,
@@ -124,8 +121,8 @@ const generateICalContent = (startDate: Date, frequency: string): string => {
 };
 
 // Generate and download calendar file
-export const generateCalendarFile = (startDate: Date, frequency: string): void => {
-  const content = generateICalContent(startDate, frequency);
+export const generateCalendarFile = (startDate: Date, frequency: string, timezone: string): void => {
+  const content = generateICalContent(startDate, frequency, timezone);
   const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
   const url = URL.createObjectURL(blob);
 
