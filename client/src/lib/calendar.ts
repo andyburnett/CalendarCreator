@@ -106,6 +106,7 @@ const generateICalContent = (startDate: Date, frequency: string): string => {
       `SUMMARY:${entry.title}`,
       `DESCRIPTION:${description}`,
       `URL:${entry.link}`,
+      `LOCATION:${entry.link}`,
       'SEQUENCE:0',
       'STATUS:CONFIRMED',
       'TRANSP:OPAQUE',
