@@ -13,32 +13,40 @@ function App() {
     const form = e.currentTarget;
     const startDate = (form.querySelector('#start-date') as HTMLInputElement).value;
     const frequency = (form.querySelector('[name="frequency"]') as HTMLSelectElement).value;
-    
+
     generateCalendarFile(new Date(startDate), frequency);
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl">Create a Calendar File</CardTitle>
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader className="space-y-2 text-center sm:text-left">
+          <CardTitle className="text-xl sm:text-2xl font-bold">Create a Calendar File</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="start-date">When would you like to start learning</Label>
+            <div className="space-y-3">
+              <Label 
+                htmlFor="start-date" 
+                className="text-sm sm:text-base font-medium"
+              >
+                When would you like to start learning
+              </Label>
               <Input
                 type="date"
                 id="start-date"
                 defaultValue={today}
                 required
+                className="w-full p-2 sm:p-3"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>Frequency</Label>
+            <div className="space-y-3">
+              <Label className="text-sm sm:text-base font-medium">
+                Frequency
+              </Label>
               <Select name="frequency" defaultValue="daily">
-                <SelectTrigger>
+                <SelectTrigger className="w-full p-2 sm:p-3">
                   <SelectValue placeholder="Select frequency" />
                 </SelectTrigger>
                 <SelectContent>
@@ -49,7 +57,10 @@ function App() {
               </Select>
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button 
+              type="submit" 
+              className="w-full py-3 text-sm sm:text-base font-medium mt-6"
+            >
               Create Calendar File
             </Button>
           </form>
