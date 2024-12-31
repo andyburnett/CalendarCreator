@@ -91,13 +91,13 @@ const generateICalContent = (startDate: Date, frequency: string): string => {
   calendarEntries.forEach((entry, index) => {
     const eventStart = formatDate(currentDate);
 
-    // Set event end time to 1 hour after start
+    // Set event end time to 30 minutes after start
     const endDate = new Date(currentDate);
-    endDate.setHours(endDate.getHours() + 1);
+    endDate.setMinutes(endDate.getMinutes() + 30);
     const eventEnd = formatDate(endDate);
 
     // Format description with the link
-    const description = `${entry.description}\n\nMore information: ${entry.link}`;
+    const description = `${entry.description}\n\nClick here to learn more: ${entry.link}`;
 
     content = content.concat([
       'BEGIN:VEVENT',
@@ -105,6 +105,7 @@ const generateICalContent = (startDate: Date, frequency: string): string => {
       `DTEND:${eventEnd}`,
       `SUMMARY:${entry.title}`,
       `DESCRIPTION:${description}`,
+      `URL:${entry.link}`,
       'SEQUENCE:0',
       'STATUS:CONFIRMED',
       'TRANSP:OPAQUE',
