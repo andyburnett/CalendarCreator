@@ -36,6 +36,7 @@ function App() {
                 type="date"
                 id="start-date"
                 defaultValue={today}
+                min={today}
                 required
                 className="w-full p-2 sm:p-3"
               />
