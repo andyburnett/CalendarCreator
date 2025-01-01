@@ -20,6 +20,30 @@ class LearningScheduleCalendar {
         add_shortcode('calendar_app', array($this, 'render_calendar_app'));
     }
 
+    // Get WordPress theme colors
+    private function get_theme_colors() {
+        $theme_colors = array(
+            'primary' => get_theme_mod('primary_color', '#000000'),
+            'background' => get_background_color(),
+            'text' => get_theme_mod('text_color', '#000000'),
+            'link' => get_theme_mod('link_color', '#0073aa'),
+            'accent' => get_theme_mod('accent_color', '#0073aa')
+        );
+
+        // Get additional colors from theme.json if available
+        $theme_json_file = get_template_directory() . '/theme.json';
+        if (file_exists($theme_json_file)) {
+            $theme_json = json_decode(file_get_contents($theme_json_file), true);
+            if (isset($theme_json['settings']['color']['palette'])) {
+                foreach ($theme_json['settings']['color']['palette'] as $color) {
+                    $theme_colors[$color['slug']] = $color['color'];
+                }
+            }
+        }
+
+        return $theme_colors;
+    }
+
     public function add_admin_menu() {
         add_menu_page(
             'Learning Schedule Calendar',
@@ -33,6 +57,10 @@ class LearningScheduleCalendar {
 
     public function register_settings() {
         register_setting('learning_schedule_calendar', 'lsc_custom_styles');
+        register_setting('learning_schedule_calendar', 'lsc_use_theme_colors', array(
+            'type' => 'boolean',
+            'default' => true
+        ));
     }
 
     public function enqueue_scripts() {
@@ -48,6 +76,8 @@ class LearningScheduleCalendar {
             array(),
             '1.0.0'
         );
+
+        // Enqueue main script with theme colors
         wp_enqueue_script(
             'learning-schedule-calendar',
             plugin_dir_url(__FILE__) . 'assets/wordpress-bundle.js',
@@ -55,10 +85,25 @@ class LearningScheduleCalendar {
             '1.0.0',
             true
         );
+
+        // Pass theme colors to JavaScript
+        $use_theme_colors = get_option('lsc_use_theme_colors', true);
+        wp_localize_script(
+            'learning-schedule-calendar',
+            'calendarAppConfig',
+            array(
+                'useThemeColors' => $use_theme_colors,
+                'themeColors' => $use_theme_colors ? $this->get_theme_colors() : null,
+                'themeSettings' => array(
+                    'radius' => '0.5',
+                    'variant' => 'professional'
+                )
+            )
+        );
     }
 
     public function render_calendar_app() {
-        return '<div id="calendar-app-container"></div>';
+        return '<div id="calendar-app-container" class="calendar-app-wp-container"></div>';
     }
 
     public function render_admin_page() {
@@ -67,10 +112,11 @@ class LearningScheduleCalendar {
         }
 
         $custom_styles = get_option('lsc_custom_styles', '');
+        $use_theme_colors = get_option('lsc_use_theme_colors', true);
         ?>
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            
+
             <div class="notice notice-success is-dismissible" style="display: none;" id="lsc-settings-saved">
                 <p>Settings saved successfully!</p>
             </div>
@@ -89,6 +135,26 @@ class LearningScheduleCalendar {
                 <table class="form-table">
                     <tr>
                         <th scope="row">
+                            <label for="lsc_use_theme_colors">Theme Integration</label>
+                        </th>
+                        <td>
+                            <label>
+                                <input 
+                                    type="checkbox" 
+                                    name="lsc_use_theme_colors" 
+                                    id="lsc_use_theme_colors"
+                                    value="1"
+                                    <?php checked($use_theme_colors); ?>
+                                />
+                                Automatically match WordPress theme colors
+                            </label>
+                            <p class="description">
+                                When enabled, the calendar will use your WordPress theme's colors.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
                             <label for="lsc_custom_styles">Custom CSS Styles</label>
                         </th>
                         <td>
@@ -100,6 +166,7 @@ class LearningScheduleCalendar {
                             ><?php echo esc_textarea($custom_styles); ?></textarea>
                             <p class="description">
                                 Add custom CSS styles to customize the appearance of your calendar.
+                                These styles will be applied regardless of theme integration settings.
                             </p>
                         </td>
                     </tr>
