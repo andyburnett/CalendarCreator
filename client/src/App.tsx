@@ -25,7 +25,7 @@ function App() {
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md mx-auto">
         <CardHeader className="space-y-2 text-center sm:text-left">
-          <CardTitle className="text-xl sm:text-2xl font-bold">Create a Calendar File</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl font-bold">Create Your Learning Schedule</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -34,7 +34,7 @@ function App() {
                 htmlFor="start-date" 
                 className="text-sm sm:text-base font-medium"
               >
-                When would you like to start learning
+                When would you like to start the class?
               </Label>
               <Input
                 type="date"
@@ -51,7 +51,7 @@ function App() {
                 htmlFor="start-time" 
                 className="text-sm sm:text-base font-medium"
               >
-                What time of day would you like to schedule your learning sessions
+                Typically, what time of day works best for you?
               </Label>
               <Input
                 type="time"
@@ -64,7 +64,7 @@ function App() {
 
             <div className="space-y-3">
               <Label className="text-sm sm:text-base font-medium">
-                How often would you like to schedule your learning sessions?
+                How often would you like to schedule your class?
               </Label>
               <Select name="frequency" defaultValue="daily">
                 <SelectTrigger className="w-full p-2 sm:p-3">
