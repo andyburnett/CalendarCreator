@@ -6,6 +6,13 @@ import { Toaster } from "@/components/ui/toaster";
 import App from './App';
 import "./index.css";
 
+// Declare the global type for the initialization function
+declare global {
+  interface Window {
+    initializeCalendarApp: (containerId: string) => void;
+  }
+}
+
 // Function to initialize the app
 window.initializeCalendarApp = function(containerId: string) {
   const container = document.getElementById(containerId);
