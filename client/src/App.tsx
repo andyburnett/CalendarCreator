@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { generateCalendarFile } from "./lib/calendar";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const today = new Date().toISOString().split('T')[0];
@@ -24,6 +24,49 @@ function App() {
     const dateTime = new Date(`${formData.startDate}T${formData.startTime}`);
     generateCalendarFile(dateTime, formData.frequency);
   };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent handling if user is typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (step < 2) {
+            setStep(step + 1);
+          } else {
+            const form = document.querySelector('form');
+            if (form) form.requestSubmit();
+          }
+        }
+        return;
+      }
+
+      switch (e.key) {
+        case 'Escape':
+          if (step > 0) {
+            e.preventDefault();
+            setStep(step - 1);
+          }
+          break;
+        case 'ArrowRight':
+          if (step < 2) {
+            e.preventDefault();
+            setStep(step + 1);
+          }
+          break;
+        case 'ArrowLeft':
+          if (step > 0) {
+            e.preventDefault();
+            setStep(step - 1);
+          }
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [step]);
 
   const formSections = [
     {
@@ -145,7 +188,7 @@ function App() {
             </Button>
             <Button 
               type="submit"
-              onClick={handleSubmit} // Added onClick handler to the submit button
+              onClick={handleSubmit}
               className="px-6"
             >
               Create Calendar File
