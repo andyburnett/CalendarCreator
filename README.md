@@ -1,2 +1,8 @@
-git clone [your-repo-url]
-cd [repo-name] Interesting. That the readme has been changed
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
