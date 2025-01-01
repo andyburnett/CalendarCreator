@@ -51,7 +51,7 @@ function App() {
                 htmlFor="start-time" 
                 className="text-sm sm:text-base font-medium"
               >
-                Time
+                What time of day would you like to schedule your learning sessions
               </Label>
               <Input
                 type="time"
@@ -64,7 +64,7 @@ function App() {
 
             <div className="space-y-3">
               <Label className="text-sm sm:text-base font-medium">
-                Frequency
+                How often would you like to schedule your learning sessions?
               </Label>
               <Select name="frequency" defaultValue="daily">
                 <SelectTrigger className="w-full p-2 sm:p-3">
