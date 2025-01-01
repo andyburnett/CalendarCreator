@@ -12,16 +12,17 @@ function App() {
   const defaultTime = "09:00"; // Default to 9 AM
   const [step, setStep] = useState(0);
 
+  // Track form values in state
+  const [formData, setFormData] = useState({
+    startDate: today,
+    startTime: defaultTime,
+    frequency: "daily"
+  });
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const startDate = (form.querySelector('#start-date') as HTMLInputElement).value;
-    const startTime = (form.querySelector('#start-time') as HTMLInputElement).value;
-    const frequency = (form.querySelector('[name="frequency"]') as HTMLSelectElement).value;
-
-    // Combine date and time
-    const dateTime = new Date(`${startDate}T${startTime}`);
-    generateCalendarFile(dateTime, frequency);
+    const dateTime = new Date(`${formData.startDate}T${formData.startTime}`);
+    generateCalendarFile(dateTime, formData.frequency);
   };
 
   const formSections = [
@@ -44,7 +45,8 @@ function App() {
           <Input
             type="date"
             id="start-date"
-            defaultValue={today}
+            value={formData.startDate}
+            onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
             min={today}
             required
             className="w-full p-2 sm:p-3"
@@ -80,7 +82,8 @@ function App() {
           <Input
             type="time"
             id="start-time"
-            defaultValue={defaultTime}
+            value={formData.startTime}
+            onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
             required
             className="w-full p-2 sm:p-3"
           />
@@ -117,7 +120,11 @@ function App() {
           <Label className="text-sm sm:text-base font-medium">
             How often would you like to schedule your class?
           </Label>
-          <Select name="frequency" defaultValue="daily">
+          <Select 
+            name="frequency" 
+            value={formData.frequency}
+            onValueChange={(value) => setFormData({ ...formData, frequency: value })}
+          >
             <SelectTrigger className="w-full p-2 sm:p-3">
               <SelectValue placeholder="Select frequency" />
             </SelectTrigger>
@@ -138,6 +145,7 @@ function App() {
             </Button>
             <Button 
               type="submit"
+              onClick={handleSubmit} // Added onClick handler to the submit button
               className="px-6"
             >
               Create Calendar File
