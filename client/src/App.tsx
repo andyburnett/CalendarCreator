@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { generateCalendarFile } from "./lib/calendar";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { TutorialOverlay } from "@/components/TutorialOverlay";
 
 function App() {
   const today = new Date().toISOString().split('T')[0];
@@ -201,6 +202,7 @@ function App() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
+      <TutorialOverlay />
       <Card className="w-full max-w-md mx-auto">
         <CardHeader className="space-y-2 text-center sm:text-left">
           <CardTitle className="text-xl sm:text-2xl font-bold">Create Your Learning Schedule</CardTitle>
