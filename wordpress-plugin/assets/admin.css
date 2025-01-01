@@ -1,0 +1,42 @@
+.wrap {
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 1.4em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.card code {
+    display: inline-block;
+    background: #f0f0f1;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+#lsc_custom_styles {
+    font-family: monospace;
+    resize: vertical;
+}
+
+.form-table th {
+    width: 200px;
+}
+
+.notice {
+    margin: 20px 0;
+}
