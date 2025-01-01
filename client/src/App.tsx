@@ -4,23 +4,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { generateCalendarFile } from "./lib/calendar";
-import { useState } from "react";
 
 function App() {
   const today = new Date().toISOString().split('T')[0];
-  const defaultTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const [selectedTimezone, setSelectedTimezone] = useState(defaultTimezone);
-
-  // Get list of all available timezones
-  const timezones = Intl.supportedValuesOf('timeZone');
+  const defaultTime = "09:00"; // Default to 9 AM
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const startDate = (form.querySelector('#start-date') as HTMLInputElement).value;
+    const startTime = (form.querySelector('#start-time') as HTMLInputElement).value;
     const frequency = (form.querySelector('[name="frequency"]') as HTMLSelectElement).value;
 
-    generateCalendarFile(new Date(startDate), frequency, selectedTimezone);
+    // Combine date and time
+    const dateTime = new Date(`${startDate}T${startTime}`);
+    generateCalendarFile(dateTime, frequency);
   };
 
   return (
@@ -49,6 +47,22 @@ function App() {
             </div>
 
             <div className="space-y-3">
+              <Label 
+                htmlFor="start-time" 
+                className="text-sm sm:text-base font-medium"
+              >
+                Time
+              </Label>
+              <Input
+                type="time"
+                id="start-time"
+                defaultValue={defaultTime}
+                required
+                className="w-full p-2 sm:p-3"
+              />
+            </div>
+
+            <div className="space-y-3">
               <Label className="text-sm sm:text-base font-medium">
                 Frequency
               </Label>
@@ -60,27 +74,6 @@ function App() {
                   <SelectItem value="daily">Daily</SelectItem>
                   <SelectItem value="two-days">Every two days</SelectItem>
                   <SelectItem value="weekly">Weekly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-3">
-              <Label className="text-sm sm:text-base font-medium">
-                Timezone
-              </Label>
-              <Select 
-                value={selectedTimezone} 
-                onValueChange={setSelectedTimezone}
-              >
-                <SelectTrigger className="w-full p-2 sm:p-3">
-                  <SelectValue placeholder="Select timezone" />
-                </SelectTrigger>
-                <SelectContent className="max-h-[200px]">
-                  {timezones.map((timezone) => (
-                    <SelectItem key={timezone} value={timezone}>
-                      {timezone.replace(/_/g, ' ')}
-                    </SelectItem>
-                  ))}
                 </SelectContent>
               </Select>
             </div>

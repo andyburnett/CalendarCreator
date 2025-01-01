@@ -42,7 +42,7 @@ export const calendarEntries: CalendarEntry[] = [
 // Function to pad numbers with leading zeros
 const pad = (num: number): string => String(num).padStart(2, '0');
 
-// Format date to iCal format with timezone
+// Format date to iCal format
 const formatDate = (date: Date): string => {
   const year = date.getFullYear();
   const month = pad(date.getMonth() + 1);
@@ -76,7 +76,7 @@ const getNextDate = (currentDate: Date, frequency: string): Date => {
 };
 
 // Generate iCal content
-const generateICalContent = (startDate: Date, frequency: string, timezone: string): string => {
+const generateICalContent = (startDate: Date, frequency: string): string => {
   let content = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -101,8 +101,8 @@ const generateICalContent = (startDate: Date, frequency: string, timezone: strin
 
     content = content.concat([
       'BEGIN:VEVENT',
-      `DTSTART;TZID=${timezone}:${eventStart}`,
-      `DTEND;TZID=${timezone}:${eventEnd}`,
+      `DTSTART:${eventStart}`,
+      `DTEND:${eventEnd}`,
       `SUMMARY:${entry.title}`,
       `DESCRIPTION:${description}`,
       `URL:${entry.link}`,
@@ -121,8 +121,8 @@ const generateICalContent = (startDate: Date, frequency: string, timezone: strin
 };
 
 // Generate and download calendar file
-export const generateCalendarFile = (startDate: Date, frequency: string, timezone: string): void => {
-  const content = generateICalContent(startDate, frequency, timezone);
+export const generateCalendarFile = (startDate: Date, frequency: string): void => {
+  const content = generateICalContent(startDate, frequency);
   const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
   const url = URL.createObjectURL(blob);
 
